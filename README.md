@@ -1,4 +1,5 @@
-#ELA-CLI
+# ELA-CLI
+## Error Level Analysis - Command Line Tool
 
 This Tool is a simple implementation of following paper:
 
