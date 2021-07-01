@@ -35,7 +35,7 @@ except ImportError:
 @click.option("--quality-steps", "-steps", "steps", default=5,
               type=click.IntRange(1, 100),
               help="quality steps for pictures")
-@click.option("--t", "-thumb_diff", "thumb_diff", is_flag=True,
+@click.option("-t", "--thumb_diff", "thumb_diff", is_flag=True,
               help="compares thumbnail with original")
 def cli(in_files, out_dir, min_quality, max_quality, steps, thumb_diff):
     if os.path.isdir(in_files):
@@ -51,10 +51,11 @@ def cli(in_files, out_dir, min_quality, max_quality, steps, thumb_diff):
 def process_file(filename, out_dir, max_quality, min_quality, steps, thumb_diff):
     for q_step in range(min_quality, max_quality, steps):
         os.makedirs(out_dir, exist_ok=True)
-        resaved = os.path.join(out_dir, Path(filename).stem + f"_q_{q_step}_resaved.jpg")
+
         error_analyze = os.path.join(out_dir, Path(filename).stem + f"_q_{q_step}_error_analyze.png")
         im = Image.open(filename)
 
+        resaved = StringIO()
         im.save(resaved, 'JPEG', quality=q_step)
         resavedf = Image.open(resaved)
 
@@ -65,7 +66,7 @@ def process_file(filename, out_dir, max_quality, min_quality, steps, thumb_diff)
 
         error_analyze_im = ImageEnhance.Brightness(error_analyze_im).enhance(scale)
         error_analyze_im.save(error_analyze)
-        os.remove(resaved)
+
         if thumb_diff:
             compare_thumbnail(filename, out_dir)
 
